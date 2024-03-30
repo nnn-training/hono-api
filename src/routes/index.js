@@ -5,7 +5,7 @@ const app = new Hono();
 
 app.get("/", (c) => {
   return c.html(html`
-    <!DOCTYPE html>
+    <!doctype html>
     <html>
       <body>
         <div>

@@ -24,7 +24,7 @@ app.route("/users", usersRouter);
 app.notFound((c) => {
   return c.html(
     html`
-      <!DOCTYPE html>
+      <!doctype html>
       <html>
         <head>
           <title>Not Found</title>
@@ -44,7 +44,7 @@ app.onError((error, c) => {
   const { NODE_ENV } = env(c);
   return c.html(
     html`
-      <!DOCTYPE html>
+      <!doctype html>
       <html>
         <head>
           <title>Error</title>

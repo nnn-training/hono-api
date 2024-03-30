@@ -2,15 +2,15 @@
 
 const { Hono } = require("hono");
 const { logger } = require("hono/logger");
-const { html, raw } = require("hono/html");
+const { html } = require("hono/html");
 const { HTTPException } = require("hono/http-exception");
 const { secureHeaders } = require("hono/secure-headers");
-const { env } = require('hono/adapter');
+const { env } = require("hono/adapter");
 const { serve } = require("@hono/node-server");
 const { serveStatic } = require("@hono/node-server/serve-static");
+
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
-
 
 const app = new Hono();
 
@@ -22,27 +22,28 @@ app.route("/", indexRouter);
 app.route("/users", usersRouter);
 
 app.notFound((c) => {
-    return c.html(
-      html`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Not Found</title>
-          </head>
-          <body>
-            <h1>Not Found</h1>
-            <p>${c.req.url} の内容が見つかりませんでした。</p>
-          </body>
-        </html>
-      `,
-      404
-    );
-  });
+  return c.html(
+    html`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Not Found</title>
+        </head>
+        <body>
+          <h1>Not Found</h1>
+          <p>${c.req.url} の内容が見つかりませんでした。</p>
+        </body>
+      </html>
+    `,
+    404,
+  );
+});
 
-  app.onError((error, c) => {
-    const statusCode = error instanceof HTTPException ? error.status : 500;
-    const { NODE_ENV } = env(c);
-    return c.html(html`
+app.onError((error, c) => {
+  const statusCode = error instanceof HTTPException ? error.status : 500;
+  const { NODE_ENV } = env(c);
+  return c.html(
+    html`
       <!DOCTYPE html>
       <html>
         <head>
@@ -52,10 +53,17 @@ app.notFound((c) => {
           <h1>Error</h1>
           <h2>${error.name} (${statusCode})</h2>
           <p>${error.message}</p>
-          ${NODE_ENV === 'development' 
-            ? raw(html`<pre>${error.stack}</pre>`) 
-            : ''}
+          ${NODE_ENV === "development" ? html`<pre>${error.stack}</pre>` : ""}
         </body>
       </html>
-    `, statusCode);
-  });
+    `,
+    statusCode,
+  );
+});
+
+const port = 3000;
+console.log(`Server running at http://localhost:${port}/`);
+serve({
+  fetch: app.fetch,
+  port,
+});

@@ -12,6 +12,7 @@ const { trimTrailingSlash } = require("hono/trailing-slash")
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const photosRouter = require("./routes/photos");
 
 const app = new Hono();
 
@@ -22,6 +23,7 @@ app.use(trimTrailingSlash());
 
 app.route("/", indexRouter);
 app.route("/users", usersRouter);
+app.route("/photos", photosRouter);
 
 app.notFound((c) => {
   return c.html(
